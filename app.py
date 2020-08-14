@@ -1,4 +1,5 @@
 from datetime import datetime
+from pprint import pprint
 import os
 import urllib.request
 
@@ -12,13 +13,18 @@ urllib.request.urlretrieve(
     logfile
 )
 
-with open(logfile) as f:
-    loglines = f.readlines()
-
-
-# for you to code:
 
 def convert_to_datetime(line):
+    index_of_first_num = -1
+    for char in line:
+        if char.isdigit():
+            index_of_first_num = line.find(char)
+            datetime_str = line[index_of_first_num:]
+            datetime_str = datetime_str.replace('T', ' ')
+            converted_datetime_str = datetime.strptime(
+                datetime_str, '%Y-%m-%d %H:%M:%S')
+            return converted_datetime_str
+
     """TODO 1:
        Extract timestamp from logline and convert it to a datetime object.
        For example calling the function with:
@@ -26,7 +32,6 @@ def convert_to_datetime(line):
        returns:
        datetime(2014, 7, 3, 23, 27, 51)
     """
-    pass
 
 
 def time_between_shutdowns(loglines):
@@ -35,4 +40,10 @@ def time_between_shutdowns(loglines):
        calculate the timedelta between the first and last one.
        Return this datetime.timedelta object.
     """
-    pass
+
+
+with open(logfile) as f:
+    loglines = f.readlines()
+    for line in loglines:
+        stripped_line = line.split('supybot')[0].strip()
+        convert_to_datetime(stripped_line)
